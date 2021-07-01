@@ -1,39 +1,38 @@
-import React, {useEffect} from 'react'
-import {useSelector, useDispatch} from 'react-redux';
-import {setList} from '../../redux/actions/Actions'
-import axios from 'axios';
-import { getByTitle } from '@testing-library/dom';
-import Item from '../Item/Item'
+import React, { useEffect } from "react";
+import { connect, useSelector, useDispatch } from "react-redux";
+import { fetchPost } from "../../redux/actions/Actions";
 
-const List = () => {
-    const list=useSelector((state)=>state.posts);
-    const dispatch = useDispatch();
-    const getList=async ()=>{
-        const response=await axios
-        .get(`https://jsonplaceholder.typicode.com/posts`)
-        .catch((err)=>console.log(err));
-        console.log(response.data)
-        dispatch(setList(response.data))//update the state
-    }
-    useEffect(()=>getList(), []);
-    console.log(list)
-    //console.log(typeof(list))
-    /*
-    list.map((post)=>{
-        const {title, body}=post;
-        return(
-            <>
-                <h2>{title}</h2>
-                <p>{body}</p>
-            </>
-        )
-    })*/
-    return (
-        <>
-            <Item/>
-        </>
-    )
-   
-}
+const List = ({ loading, posts, fetchPost }) => {
+  useEffect(() => {
+    fetchPost();
+  }, []);
 
-export default List
+  return loading ? (
+    <h2>loading</h2>
+  ) : (
+    <div>
+      <h2>posts:</h2>
+      <div>
+        {posts.map((post) => (
+          <p>{post.title}</p>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const mapStateToProps = (state) => {
+  //can use selector
+  return {
+    posts: state.posts, //return a property of state
+    loading: state.loading,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchPost: () => dispatch(fetchPost()),
+  };
+}; //be called by the action name
+
+export default connect(mapStateToProps, mapDispatchToProps)(List);

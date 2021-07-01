@@ -1,3 +1,5 @@
 export const Actiontypes={
-    SET_LIST:'SET_LIST'
+    FETCH_REQUEST:'FETCH_REQUEST',
+    LIST_SUCCESS:'LIST_SUCCESS',
+    LIST_FAILURE:'LIST_FAILURE'
 }
